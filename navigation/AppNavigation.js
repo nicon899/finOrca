@@ -6,6 +6,7 @@ import CreateCategoryScreen from '../screens/CreateCategoryScreen';
 import BookingDetailsScreen from '../screens/BookingDetailsScreen';
 import CreateBookingScreen from '../screens/CreateBookingScreen';
 import EditCategoryScreen from '../screens/EditCategoryScreen';
+import Settings from '../screens/Settings';
 
 const FinanceStack = createStackNavigator();
 export const FinanceStackNavigator = () => {
@@ -22,6 +23,7 @@ export const FinanceStackNavigator = () => {
             <FinanceStack.Screen name="EditCategory" component={EditCategoryScreen} />
             <FinanceStack.Screen name="Booking" component={BookingDetailsScreen} />
             <FinanceStack.Screen name="CreateBooking" component={CreateBookingScreen} />
+            <FinanceStack.Screen name="Settings" component={Settings} />
         </FinanceStack.Navigator>
     );
 }

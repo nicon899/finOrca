@@ -24,6 +24,7 @@ const initialContext = {
         addTransaction: async (transaction) => { },
         updateTransaction: async (transaction) => { },
         deleteTransaction: async (id) => { },
+        restoreBackup: async (uri) => { },
         refresh: async () => { }
     },
     categories: [],
@@ -46,6 +47,18 @@ export const FinProvider = ({ children }) => {
         })();
     }, [])
 
+    const restoreBackup = async (uri) => {
+        // @ts-ignore
+        db.current._db.close();
+        restoreBackup
+        await FileSystem.moveAsync({
+            from: uri,
+            to: FileSystem.documentDirectory + 'SQLite/finDatabase.db'
+        });
+        db.current = SQLite.openDatabase('finDatabase.db');
+        await refresh();
+    }
+
     const createEntity = (name, entity) => {
         return new Promise((resolve, reject) => {
             // create sql statement
@@ -59,8 +72,6 @@ export const FinProvider = ({ children }) => {
             qms = qms.slice(0, -1);
             const sql = `INSERT INTO ${name} (${columns}) VALUES (${qms})`
             // execute sql
-            console.log(sql)
-            console.log(values)
             db.current.transaction(tx => {
                 tx.executeSql(sql, values,
                     (txObj, resultSet) => {
@@ -264,7 +275,8 @@ export const FinProvider = ({ children }) => {
                     deleteCategory,
                     addTransaction,
                     updateTransaction,
-                    deleteTransaction
+                    deleteTransaction,
+                    restoreBackup
                 },
                 isLoading,
                 categories,

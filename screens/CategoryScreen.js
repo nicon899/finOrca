@@ -38,7 +38,6 @@ const CategoryScreen = props => {
     }
 
     useEffect(() => {
-        console.log('useEffecgt backAction')
         const backAction = () => {
             if (!props.navigation.isFocused()) {
                 return false;
