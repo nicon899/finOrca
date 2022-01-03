@@ -8,7 +8,7 @@ const CategoryItemList = props => {
         <SafeAreaView style={props.style}>
             <FlatList
                 data={props.categories.concat(props.bookings)}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={item => `${item.id}`}
                 renderItem={itemData => {
                     if (!itemData.item.categoryId) {
                         return <CategoryItem showContent={(id) => props.showCategory(id)} item={itemData.item} />

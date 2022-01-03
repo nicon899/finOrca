@@ -11,11 +11,13 @@ const EditCategoryScreen = props => {
     const [isOrderChanged, setIsOrderChanged] = useState(false);
     const [name, setName] = useState(props.route.params.name);
     const { updateCategory, deleteCategory } = useContext(finContext).actions
-    const [categoryParentId, setCategoryParentId] = useState(categories.find(c => c.id === props.route.params.categoryId).parentId);
+    const [categoryParentId, setCategoryParentId] = useState();
 
     useEffect(() => {
-        setChildCategories(categories.filter((category) => category.parentId === props.route.params.categoryId).sort((a, b) => a.index > b.index ? 1 : a.index < b.index ? -1 : 0));
-        setCategoryParentId(categories.find(c => c.id === props.route.params.categoryId).parentId)
+        const categoryToUpdate = categories.find(c => c.id === props.route.params.categoryId);
+        if (!categoryToUpdate) return;
+        setChildCategories(categories.filter((category) => category.id !== null && category.parentId === props.route.params.categoryId).sort((a, b) => a.index > b.index ? 1 : a.index < b.index ? -1 : 0));
+        setCategoryParentId(categoryToUpdate.parentId)
     }, [categories]);
 
     const updateIndexes = () => {
@@ -42,7 +44,7 @@ const EditCategoryScreen = props => {
     return (
         <View style={styles.screen}>
             <View style={{ width: '100%', height: '90%', }}>
-                {props.route.params.categoryId != -1 && <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                {props.route.params.categoryId !== null && <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <View style={styles.nameInputContainer}>
                         <TextInput
                             placeholder='Name'
@@ -67,11 +69,9 @@ const EditCategoryScreen = props => {
                                             deleteCategory(props.route.params.categoryId)
                                             props.navigation.reset({
                                                 index: 0,
-                                                routes: [
-                                                    {
-                                                        name: 'Category',
-                                                        params: { id: -1, name: 'Finanzen' },
-                                                    },
+                                                routes: [{
+                                                    name: 'Category'
+                                                },
                                                 ],
                                             })
                                         }
@@ -87,7 +87,7 @@ const EditCategoryScreen = props => {
                 }
                 <View style={{
                     width: '100%',
-                    height: props.route.params.categoryId === -1 ? '100%' : '90%',
+                    height: props.route.params.categoryId === null ? '100%' : '90%',
                 }}>
                     <View style={styles.bookingsheader}>
                         <Text style={{ color: 'white', fontSize: scaleFontSize(32), fontWeight: 'bold' }}>Categories:</Text>
@@ -104,7 +104,7 @@ const EditCategoryScreen = props => {
                     <DraggableFlatList
                         data={childCategories}
                         onDragBegin={() => setIsOrderChanged(true)}
-                        keyExtractor={(item, index) => item.id.toString()}
+                        keyExtractor={(item, index) => `${item.id}`}
                         renderItem={({ item, index, drag, isActive }) =>
                         (<TouchableOpacity
                             style={{

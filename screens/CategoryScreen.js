@@ -4,15 +4,13 @@ import CategoryItemList from '../components/CategoryItemList';
 import DatePicker from '../components/DatePicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { finContext } from '../contexts/FinContext';
-import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
 
 
 const CategoryScreen = props => {
     const context = useContext(finContext);
     const [date, _setDate] = useState(new Date());
     const [selectedCategory, setSelectedCategory] = useState(context.categories[0]);
-    const childCategories = selectedCategory ? context.categories.filter((category) => category.parentId === selectedCategory.id) : [];
+    const childCategories = selectedCategory ? context.categories.filter((category) => category.id !== null && category.parentId === selectedCategory.id) : [];
 
     const scaleFontSize = (fontSize) => {
         return Math.ceil((fontSize * Math.min(Dimensions.get('window').width / 411, Dimensions.get('window').height / 861)));
@@ -46,7 +44,7 @@ const CategoryScreen = props => {
             if (!props.navigation.isFocused()) {
                 return false;
             }
-            if (selectedCategory.id === -1) {
+            if (selectedCategory.id === null) {
                 return false;
             } else {
                 setSelectedCategory(context.categories.find((category) => category.id === selectedCategory.parentId));
@@ -83,9 +81,7 @@ const CategoryScreen = props => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
-                            onPress={() => {
-                                setLatestDate();
-                            }}>
+                            onPress={() => setLatestDate()}>
                             <MaterialCommunityIcons name="timer-sand-full" size={scaleFontSize(24)} color="white" />
                             <Text style={{ color: 'white', fontSize: scaleFontSize(7) }}>Latest</Text>
                         </TouchableOpacity>
@@ -112,16 +108,16 @@ const CategoryScreen = props => {
             <View style={{ flex: 1 }}>
                 <CategoryItemList
                     style={{ maxHeight: '100%' }}
-                    bookings={context.transactions.filter(t => t.categoryId === selectedCategory.id)}
+                    bookings={context.transactions.filter(t => t.categoryId === selectedCategory.id && t.date <= date)}
                     categories={childCategories}
                     showBooking={(id) => props.navigation.push('Booking', { id: id })}
                     showCategory={(id) => setSelectedCategory(context.categories.find((category) => category.id === id))}
-                    showBookings={selectedCategory.id != -1}
+                    showBookings={selectedCategory.id !== null}
                 />
             </View>
 
             <View style={styles.transBar}>
-                {selectedCategory.id != -1 && <TouchableOpacity
+                {selectedCategory.id !== null && <TouchableOpacity
                     style={[styles.transButton, { borderColor: '#00FF00', backgroundColor: '#00FF00' }]}
                     onPress={() => {
                         props.navigation.navigate('CreateBooking', {
@@ -131,7 +127,7 @@ const CategoryScreen = props => {
                 >
                     <Text style={{ color: 'white' }}>+</Text>
                 </TouchableOpacity>}
-                {selectedCategory.id != -1 && <TouchableOpacity
+                {selectedCategory.id !== null && <TouchableOpacity
                     style={[styles.transButton, { borderColor: '#FF0000', backgroundColor: '#FF0000' }]}
                     onPress={() => {
                         props.navigation.navigate('CreateBooking', {

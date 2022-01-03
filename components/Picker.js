@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
 const Picker = props => {
-    const [selectedItem, setSelectedItem] = useState(props.presetItemId != -1 ? props.data.find((item) => item.id === props.presetItemId) : props.data[0]);
+    const [selectedItem, setSelectedItem] = useState(props.presetItemId !== null ? props.data.find((item) => item.id === props.presetItemId) : props.data[0]);
     const [showList, setShowList] = useState(false);
 
     useEffect(() => { props.onValueChange(selectedItem) }, [])

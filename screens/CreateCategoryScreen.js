@@ -19,9 +19,9 @@ const CreateCategoryScreen = props => {
                 value={name}
                 onChangeText={(input) => setName(input)}
             />
-            <View style={{ width: '80%', height: '10%', flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center' }}>
+            <View style={{ width: '80%', flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center' }}>
                 <TouchableOpacity
-                    style={{ borderWidth: 1, borderColor: 'red', borderRadius: 5, alignItems: 'center', justifyContent: 'center', padding: 15, width: '30%', height: '50%' }}
+                    style={[styles.actionButton, { borderColor: 'red' }]}
                     onPress={() => {
                         props.navigation.goBack();
                     }}
@@ -30,7 +30,7 @@ const CreateCategoryScreen = props => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={{ borderWidth: 1, borderColor: 'green', borderRadius: 5, alignItems: 'center', justifyContent: 'center', padding: 15, width: '30%', height: '50%' }}
+                    style={[styles.actionButton, { borderColor: 'green' }]}
                     onPress={() => {
                         const category = {
                             name: name,
@@ -64,6 +64,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         color: 'white'
     },
+    actionButton: {
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 25,
+        paddingVertical: 10,
+    }
 });
 
 export default CreateCategoryScreen;

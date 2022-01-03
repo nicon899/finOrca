@@ -13,7 +13,13 @@ async function openDatabase() {
             FileSystem.documentDirectory + 'SQLite/finDatabase.db'
         );
     }
-    return SQLite.openDatabase('finDatabase.db');
+    const db = SQLite.openDatabase('finDatabase.db');
+    db._db.exec(
+        [{ sql: 'PRAGMA foreign_keys = ON;', args: [] }],
+        false,
+        () => console.log('Foreign keys turned on'),
+    );
+    return db;
 }
 
 const initialContext = {
@@ -56,6 +62,11 @@ export const FinProvider = ({ children }) => {
             to: FileSystem.documentDirectory + 'SQLite/finDatabase.db'
         });
         db.current = SQLite.openDatabase('finDatabase.db');
+        db.current._db.exec(
+            [{ sql: 'PRAGMA foreign_keys = ON;', args: [] }],
+            false,
+            () => console.log('Foreign keys turned on'),
+        );
         await refresh();
     }
 
@@ -205,7 +216,7 @@ export const FinProvider = ({ children }) => {
                 )) AS value
             FROM category pc
             UNION 
-                SELECT -1 id, 'Total', 0, null
+                SELECT NULL id, 'Total', 0, null
                 ,(SELECT SUM(value) FROM finTransaction ${date ? 'WHERE date <= \'' + date + '\'' : ''})
             ORDER BY listIndex`;
             // execute sql
@@ -232,9 +243,9 @@ export const FinProvider = ({ children }) => {
         })
     }
 
-    const fetchTransactions = async (date) => {
+    const fetchTransactions = async () => {
         await new Promise((resolve, reject) => {
-            const getTransactionsSQL = `SELECT * FROM FinTransaction ${date ? 'WHERE date <= \'' + date + '\'' : ''} ORDER BY date desc`;
+            const getTransactionsSQL = `SELECT * FROM FinTransaction ORDER BY date desc`;
             // execute sql
             db.current.transaction(tx => {
                 tx.executeSql(getTransactionsSQL, null,
@@ -262,7 +273,7 @@ export const FinProvider = ({ children }) => {
 
     const refresh = async (date = null) => {
         await fetchCategories(date);
-        await fetchTransactions(date);
+        await fetchTransactions();
     }
 
     return (
