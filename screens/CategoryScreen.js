@@ -19,6 +19,10 @@ const CategoryScreen = props => {
     }
 
     useEffect(() => {
+        setSelectedCategory(context.categories.find(c => c.id === selectedCategory.id))
+    }, [context.categories])
+
+    useEffect(() => {
         setLatestDate();
     }, []);
 

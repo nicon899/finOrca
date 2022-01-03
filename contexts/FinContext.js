@@ -234,7 +234,7 @@ export const FinProvider = ({ children }) => {
 
     const fetchTransactions = async (date) => {
         await new Promise((resolve, reject) => {
-            const getTransactionsSQL = `SELECT * FROM FinTransaction ${date ? 'WHERE date <= \'' + date + '\'' : ''}`;
+            const getTransactionsSQL = `SELECT * FROM FinTransaction ${date ? 'WHERE date <= \'' + date + '\'' : ''} ORDER BY date desc`;
             // execute sql
             db.current.transaction(tx => {
                 tx.executeSql(getTransactionsSQL, null,
