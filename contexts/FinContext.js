@@ -17,7 +17,7 @@ async function openDatabase() {
     db._db.exec(
         [{ sql: 'PRAGMA foreign_keys = ON;', args: [] }],
         false,
-        () => console.log('Foreign keys turned on'),
+        () => {},
     );
     return db;
 }
@@ -65,7 +65,7 @@ export const FinProvider = ({ children }) => {
         db.current._db.exec(
             [{ sql: 'PRAGMA foreign_keys = ON;', args: [] }],
             false,
-            () => console.log('Foreign keys turned on'),
+            () => {},
         );
         await refresh();
     }
