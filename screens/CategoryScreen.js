@@ -38,7 +38,11 @@ const CategoryScreen = props => {
     }
 
     useEffect(() => {
+        console.log('useEffecgt backAction')
         const backAction = () => {
+            if (!props.navigation.isFocused()) {
+                return false;
+            }
             if (selectedCategory.id === -1) {
                 return false;
             } else {
@@ -50,12 +54,13 @@ const CategoryScreen = props => {
             "hardwareBackPress",
             backAction
         );
-        return () => backHandler.remove();
+        return () => {
+            backHandler.remove()
+        };
     }, [selectedCategory]);
 
     return (
         <View style={styles.screen}>
-
             <View style={styles.topBar}>
                 <View style={styles.dateBar}>
                     <DatePicker
@@ -85,8 +90,7 @@ const CategoryScreen = props => {
                 </View>
                 <TouchableOpacity
                     style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
-                    onPress={() => {
-                    }}>
+                    onPress={() => props.navigation.navigate('Settings')}>
                     <MaterialCommunityIcons name="cog-outline" size={scaleFontSize(28)} color="white" />
                 </TouchableOpacity>
             </View>
