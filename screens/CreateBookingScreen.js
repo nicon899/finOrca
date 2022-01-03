@@ -76,9 +76,9 @@ const CreateBookingScreen = props => {
                 />
             </View>
 
-            <View style={{ width: '80%', height: '10%', flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center' }}>
+            <View style={{ width: '80%', flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center' }}>
                 <TouchableOpacity
-                    style={{ borderWidth: 1, borderColor: 'red', borderRadius: 5, alignItems: 'center', justifyContent: 'center', padding: 15, width: '30%', height: '50%' }}
+                    style={[styles.actionButton, { borderColor: 'red' }]}
                     onPress={() => {
                         props.navigation.goBack();
                     }}
@@ -87,7 +87,7 @@ const CreateBookingScreen = props => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={{ borderWidth: 1, borderColor: 'green', borderRadius: 5, alignItems: 'center', justifyContent: 'center', padding: 15, width: '30%', height: '50%' }}
+                    style={[styles.actionButton, { borderColor: 'green' }]}
                     onPress={() => {
                         if (/^[0-9]+(\.[0-9]{1,2})?$/g.test(value)) {
                             props.route.params.editMode ?
@@ -153,6 +153,12 @@ const styles = StyleSheet.create({
         width: '75%',
         alignItems: 'center',
         marginBottom: 25
+    },
+    actionButton: {
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 25,
+        paddingVertical: 10,
     }
 });
 

@@ -126,9 +126,9 @@ const EditCategoryScreen = props => {
                     />
                 </View>
             </View>
-            <View style={{ width: '100%', height: '10%', flexDirection: 'row', justifyContent: 'space-around', alignSelf: 'flex-end' }}>
+            <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-around', alignSelf: 'flex-end' }}>
                 <TouchableOpacity
-                    style={{ borderWidth: 1, borderColor: 'red', borderRadius: 5, alignItems: 'center', justifyContent: 'center', padding: 15, width: '30%', height: '50%' }}
+                    style={[styles.actionButton, { borderColor: 'red' }]}
                     onPress={() => {
                         props.navigation.goBack();
                     }}
@@ -137,7 +137,7 @@ const EditCategoryScreen = props => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={{ borderWidth: 1, borderColor: 'green', borderRadius: 5, alignItems: 'center', justifyContent: 'center', padding: 15, width: '30%', height: '50%' }}
+                    style={[styles.actionButton, { borderColor: 'green' }]}
                     onPress={() => {
                         if (isNameChanged) {
                             updateName();
@@ -180,6 +180,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginVertical: 10
     },
+    actionButton: {
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 25,
+        paddingVertical: 10,
+    }
 });
 
 export default EditCategoryScreen;
