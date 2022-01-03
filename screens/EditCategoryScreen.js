@@ -3,20 +3,22 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Dimensions 
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { finContext } from '../contexts/FinContext';
+import CategoryPicker from '../components/CategoryPicker';
 
 const EditCategoryScreen = props => {
     const { categories, transactions, actions } = useContext(finContext);
     const [childCategories, setChildCategories] = useState([]);
     const [isOrderChanged, setIsOrderChanged] = useState(false);
-    const [isNameChanged, setIsNameChanged] = useState(false);
     const [name, setName] = useState(props.route.params.name);
     const { updateCategory, deleteCategory } = useContext(finContext).actions
+    const [categoryParentId, setCategoryParentId] = useState(categories.find(c => c.id === props.route.params.categoryId).parentId);
 
     useEffect(() => {
         setChildCategories(categories.filter((category) => category.parentId === props.route.params.categoryId).sort((a, b) => a.index > b.index ? 1 : a.index < b.index ? -1 : 0));
+        setCategoryParentId(categories.find(c => c.id === props.route.params.categoryId).parentId)
     }, [categories]);
 
-    const updateIndexes = (categoriesWithChangedOrder) => {
+    const updateIndexes = () => {
         let index = 0;
         childCategories.forEach(cat => {
             cat.index = index;
@@ -25,9 +27,10 @@ const EditCategoryScreen = props => {
         });
     };
 
-    const updateName = () => {
+    const update = () => {
         const updatedCategory = categories.find(c => c.id === props.route.params.categoryId);
         updatedCategory.name = name;
+        updatedCategory.parentId = categoryParentId;
         updateCategory(updatedCategory);
     };
 
@@ -49,7 +52,7 @@ const EditCategoryScreen = props => {
                             autoCapitalize="none"
                             autoCorrect={false}
                             value={name}
-                            onChangeText={(input) => { setName(input); setIsNameChanged(true) }}
+                            onChangeText={(input) => { setName(input) }}
                         />
                     </View>
                     <TouchableOpacity
@@ -97,6 +100,7 @@ const EditCategoryScreen = props => {
                         </TouchableOpacity>
                     </View>
 
+                    {props.route.params.categoryId !== -1 && <CategoryPicker categoryId={categoryParentId} setCategoryId={setCategoryParentId} noFilter={true} />}
                     <DraggableFlatList
                         data={childCategories}
                         onDragBegin={() => setIsOrderChanged(true)}
@@ -139,9 +143,7 @@ const EditCategoryScreen = props => {
                 <TouchableOpacity
                     style={[styles.actionButton, { borderColor: 'green' }]}
                     onPress={() => {
-                        if (isNameChanged) {
-                            updateName();
-                        }
+                        update();
                         if (isOrderChanged) {
                             updateIndexes();
                         }

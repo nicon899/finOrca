@@ -7,7 +7,7 @@ const CategoryPicker = props => {
     const [pickerItems, setPickerItems] = useState([]);
 
     useEffect(() => {
-        const selectableCategories = allCategories.filter(c => c.id !== -1);
+        const selectableCategories = allCategories.filter(c => props.noFilter || c.id !== -1);
         selectableCategories.filter(c => c.parentId === -1).forEach(c => c.label = c.name);
 
         const getParentLabel = (parentId) => {
