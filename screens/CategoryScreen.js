@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, BackHandler, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import CategoryItemList from '../components/CategoryItemList';
 import DatePicker from '../components/DatePicker';
@@ -51,53 +51,56 @@ const CategoryScreen = props => {
             backAction
         );
         return () => backHandler.remove();
-    });
+    }, [selectedCategory]);
 
     return (
         <View style={styles.screen}>
 
-            <View style={styles.topBarDate}>
-                <DatePicker
-                    style={styles.dateInput}
-                    date={date}
-                    setDate={setDate}
-                    setTime={false}
-                />
-                <View style={styles.topBarDateIcons}>
-                    <TouchableOpacity
-                        onPress={() => setDate(new Date())}
-                    >
-                        <MaterialCommunityIcons name="timetable" size={scaleFontSize(36)} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            setLatestDate();
-                        }}>
-                        <MaterialCommunityIcons name="timer-sand-full" size={scaleFontSize(36)} color="white" />
-                    </TouchableOpacity>
-                    {selectedCategory.id != -1 && <TouchableOpacity
-                        onPress={() => {
-                            props.navigation.navigate('CreateBooking', {
-                                categoryId: selectedCategory.id, editMode: false,
-                            });
-                        }}
-                    >
-                        <MaterialCommunityIcons name="credit-card-plus" size={scaleFontSize(36)} color="#00FF00" />
-                    </TouchableOpacity>}
+            <View style={styles.topBar}>
+                <View style={styles.dateBar}>
+                    <DatePicker
+                        style={styles.dateInput}
+                        date={date}
+                        setDate={setDate}
+                        setTime={false}
+                        showArrow={false}
+                    />
+                    <View style={styles.topBarDateIcons}>
+                        <TouchableOpacity
+                            style={{ alignItems: 'center', justifyContent: 'center' }}
+                            onPress={() => setDate(new Date())}
+                        >
+                            <MaterialCommunityIcons name="timetable" size={scaleFontSize(24)} color="white" />
+                            <Text style={{ color: 'white', fontSize: scaleFontSize(7) }}>Today</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ alignItems: 'center', justifyContent: 'center' }}
+                            onPress={() => {
+                                setLatestDate();
+                            }}>
+                            <MaterialCommunityIcons name="timer-sand-full" size={scaleFontSize(24)} color="white" />
+                            <Text style={{ color: 'white', fontSize: scaleFontSize(7) }}>Latest</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+                <TouchableOpacity
+                    style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
+                    onPress={() => {
+                    }}>
+                    <MaterialCommunityIcons name="cog-outline" size={scaleFontSize(28)} color="white" />
+                </TouchableOpacity>
             </View>
 
-            <View style={styles.topBar}>
-                <View style={styles.topBarCat}>
-                    <Text style={{ color: 'white', fontSize: scaleFontSize(36), fontWeight: 'bold', textAlign: 'center' }}>{selectedCategory.name} <Text numberOfLines={1} style={{ color: selectedCategory.value > 0 ? 'green' : 'red' }}>{(selectedCategory.name + selectedCategory.value).length > 20 && '\n'}{selectedCategory.value} €</Text> </Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            props.navigation.navigate('EditCategory', { categoryId: selectedCategory.id, name: selectedCategory.name })
-                        }}
-                    >
-                        <MaterialCommunityIcons name="lead-pencil" size={scaleFontSize(32)} color="white" />
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.header}>
+                <TouchableOpacity
+                    style={styles.headerCat}
+                    onPress={() => {
+                        props.navigation.navigate('EditCategory', { categoryId: selectedCategory.id, name: selectedCategory.name })
+                    }}
+                >
+                    <Text style={{ color: 'white', fontSize: scaleFontSize(36), fontWeight: 'bold', textAlign: 'center' }}>{selectedCategory.name}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: scaleFontSize(36), fontWeight: 'bold', textAlign: 'center', color: selectedCategory.value > 0 ? 'green' : 'red' }}>{(selectedCategory.name + selectedCategory.value).length > 20 && '\n'}{selectedCategory.value} €</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={{ flex: 1 }}>
@@ -111,7 +114,28 @@ const CategoryScreen = props => {
                 />
             </View>
 
-
+            <View style={styles.transBar}>
+                {selectedCategory.id != -1 && <TouchableOpacity
+                    style={[styles.transButton, { borderColor: '#00FF00', backgroundColor: '#00FF00' }]}
+                    onPress={() => {
+                        props.navigation.navigate('CreateBooking', {
+                            categoryId: selectedCategory.id, editMode: false, value: 1
+                        });
+                    }}
+                >
+                    <Text style={{ color: 'white' }}>+</Text>
+                </TouchableOpacity>}
+                {selectedCategory.id != -1 && <TouchableOpacity
+                    style={[styles.transButton, { borderColor: '#FF0000', backgroundColor: '#FF0000' }]}
+                    onPress={() => {
+                        props.navigation.navigate('CreateBooking', {
+                            categoryId: selectedCategory.id, editMode: false, value: -1
+                        });
+                    }}
+                >
+                    <Text style={{ color: 'white' }}>-</Text>
+                </TouchableOpacity>}
+            </View>
         </View >
     );
 };
@@ -121,8 +145,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'black',
         color: 'white',
+        padding: 5
     },
-    topBar: {
+    header: {
         width: '100%',
         alignItems: 'center',
         justifyContent: 'space-around',
@@ -130,13 +155,17 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: 'grey',
     },
-    topBarDate: {
+    topBar: {
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        borderColor: 'grey',
-        borderTopWidth: 1,
-        padding: 10,
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    },
+    dateBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     topBarDateIcons: {
         alignItems: 'center',
@@ -144,15 +173,27 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '40%'
     },
-    topBarCat: {
+    headerCat: {
         width: '100%',
         flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
+        paddingVertical: 2,
+        paddingHorizontal: 5,
+    },
+    transBar: {
+        flexDirection: 'row',
+        width: '100%',
+    },
+    transButton: {
+        borderWidth: 1,
+        borderColor: 'red',
+        borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 10,
-    },
-    dateInput: {
-        width: '60%',
+        margin: 10,
+        flex: 1,
     }
 });
 

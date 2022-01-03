@@ -24,7 +24,7 @@ const DatePicker = props => {
 
     return (
         <View style={[styles.datepicker, props.style]}>
-            <TouchableOpacity
+            {props.showArrow !== false && <TouchableOpacity
                 style={styles.arrow}
                 onPress={() => {
                     let newDate = new Date(props.date.setDate(props.date.getDate() - 1));
@@ -32,7 +32,7 @@ const DatePicker = props => {
                 }}
             >
                 <Ionicons name="ios-arrow-back" size={32} color="white" />
-            </TouchableOpacity>
+            </TouchableOpacity>}
 
             <TouchableOpacity style={styles.btn} onPress={() => setShow(true)}>
                 <Ionicons style={{ marginRight: '10%' }} name="md-calendar" size={scaleFontSize(30)} color="#295184" />
@@ -41,7 +41,7 @@ const DatePicker = props => {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {props.showArrow !== false && <TouchableOpacity
                 style={styles.arrow}
                 onPress={() => {
                     let newDate = new Date(props.date.setDate(props.date.getDate() + 1));
@@ -49,7 +49,7 @@ const DatePicker = props => {
                 }}
             >
                 <Ionicons name="ios-arrow-forward" size={32} color="white" />
-            </TouchableOpacity>
+            </TouchableOpacity>}
 
             {show && (
                 <DateTimePicker
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    arrow:{
+    arrow: {
         marginHorizontal: 5
     }
 });
