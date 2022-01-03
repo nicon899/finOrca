@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { finContext } from '../contexts/FinContext';
 
 const BookingDetailScreen = props => {
-    const { transactions } = useContext(finContext);
+    const { transactions, actions } = useContext(finContext);
     const booking = transactions.find((booking) => booking.id === props.route.params.id);
 
 
@@ -27,7 +28,7 @@ const BookingDetailScreen = props => {
                             {
                                 text: 'OK', onPress: () => {
                                     props.navigation.goBack();
-                                    dispatch(financeActions.deleteBooking(props.route.params.id));
+                                    actions.deleteTransaction(props.route.params.id)
                                 }
                             },
                             ], { cancelable: true }

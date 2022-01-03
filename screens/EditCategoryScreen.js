@@ -10,21 +10,25 @@ const EditCategoryScreen = props => {
     const [isOrderChanged, setIsOrderChanged] = useState(false);
     const [isNameChanged, setIsNameChanged] = useState(false);
     const [name, setName] = useState(props.route.params.name);
+    const { updateCategory, deleteCategory } = useContext(finContext).actions
 
     useEffect(() => {
         setChildCategories(categories.filter((category) => category.parentId === props.route.params.categoryId).sort((a, b) => a.index > b.index ? 1 : a.index < b.index ? -1 : 0));
     }, [categories]);
 
-    const updateIndexes = () => {
+    const updateIndexes = (categoriesWithChangedOrder) => {
         let index = 0;
         childCategories.forEach(cat => {
-            // dispatch(financeActions.updateCategoryIndex(cat.id, index));
+            cat.index = index;
+            updateCategory(cat)
             index++;
         });
     };
 
     const updateName = () => {
-        // dispatch(financeActions.updateCategoryName(props.route.params.categoryId, name));
+        const updatedCategory = categories.find(c => c.id === props.route.params.categoryId);
+        updatedCategory.name = name;
+        updateCategory(updatedCategory);
     };
 
     const scaleFontSize = (fontSize) => {
@@ -57,7 +61,7 @@ const EditCategoryScreen = props => {
                                     { text: 'Cancel', style: 'cancel' },
                                     {
                                         text: 'OK', onPress: () => {
-                                            // dispatch(financeActions.deleteCategory(props.route.params.categoryId, categories, bookings));
+                                            deleteCategory(props.route.params.categoryId)
                                             props.navigation.reset({
                                                 index: 0,
                                                 routes: [
@@ -118,7 +122,7 @@ const EditCategoryScreen = props => {
                             </Text>
                         </TouchableOpacity>)
                         }
-                        onDragEnd={(data) => setCategories(data.data)}
+                        onDragEnd={(data) => setChildCategories(data.data)}
                     />
                 </View>
             </View>

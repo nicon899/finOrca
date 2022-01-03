@@ -19,7 +19,11 @@ async function openDatabase() {
 const initialContext = {
     actions: {
         addCategory: async (category) => { },
+        updateCategory: async (category) => { },
+        deleteCategory: async (id) => { },
         addTransaction: async (transaction) => { },
+        updateTransaction: async (transaction) => { },
+        deleteTransaction: async (id) => { },
         refresh: async () => { }
     },
     categories: [],
@@ -70,14 +74,58 @@ export const FinProvider = ({ children }) => {
         })
     }
 
+    const deleteEntity = async (name, id) => {
+        await new Promise((resolve, reject) => {
+            const sql = `DELETE FROM ${name} WHERE id = ${id}`
+            // execute sql
+            db.current.transaction(tx => {
+                tx.executeSql(sql, null,
+                    (txObj, resultSet) => {
+                        return resolve()
+                    },
+                    (txObj, error) => {
+                        return reject(error)
+                    }
+                )
+            });
+        })
+    }
+
     const addCategory = async (category) => {
         const id = await createEntity('category', {
             name: category.name,
             listIndex: category.index,
             parentId: category.parentId
         });
-        // refresh();
+        refresh();
         return id;
+    }
+
+    const updateCategory = async (category) => {
+        await new Promise((resolve, reject) => {
+            const sql = `UPDATE category SET 
+                    name = '${category.name}'
+                    ,listIndex = ${category.index}
+                    ,parentId = ${category.parentId}
+                WHERE id = ${category.id}`
+            // execute sql
+            db.current.transaction(tx => {
+                tx.executeSql(sql, null,
+                    (txObj, resultSet) => {
+                        return resolve()
+                    },
+                    (txObj, error) => {
+                        return reject(error)
+                    }
+                )
+            });
+        })
+        refresh();
+    }
+
+    const deleteCategory = async (id) => {
+        await deleteEntity('category', id);
+        refresh();
     }
 
     const addTransaction = async (transaction) => {
@@ -88,8 +136,37 @@ export const FinProvider = ({ children }) => {
             date: transaction.date.toISOString(),
             categoryId: transaction.categoryId,
         });
-        // refresh();
+        refresh();
         return id;
+    }
+
+    const updateTransaction = async (transaction) => {
+        await new Promise((resolve, reject) => {
+            const sql = `UPDATE finTransaction SET 
+                    name = '${transaction.name}'
+                    ,value = ${transaction.value}
+                    ,details = '${transaction.details}'
+                    ,date = '${transaction.date.toISOString()}'
+                    ,categoryId = ${transaction.categoryId}
+                WHERE id = ${transaction.id}`
+            // execute sql
+            db.current.transaction(tx => {
+                tx.executeSql(sql, null,
+                    (txObj, resultSet) => {
+                        return resolve()
+                    },
+                    (txObj, error) => {
+                        return reject(error)
+                    }
+                )
+            });
+        })
+        refresh();
+    }
+
+    const deleteTransaction = async (id) => {
+        await deleteEntity('finTransaction', id);
+        refresh();
     }
 
     const fetchCategories = async (date) => {
@@ -183,7 +260,11 @@ export const FinProvider = ({ children }) => {
                 actions: {
                     refresh,
                     addCategory,
-                    addTransaction
+                    updateCategory,
+                    deleteCategory,
+                    addTransaction,
+                    updateTransaction,
+                    deleteTransaction
                 },
                 isLoading,
                 categories,

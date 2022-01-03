@@ -12,7 +12,10 @@ export const FinanceStackNavigator = () => {
     return (
         <FinanceStack.Navigator
             screenOptions={{
-                headerShown: true
+                headerShown: false,
+                headerStyle: {
+                    backgroundColor: 'black'
+                }
             }}>
             <FinanceStack.Screen name="Category" component={CategoryScreen} />
             <FinanceStack.Screen name="CreateCategory" component={CreateCategoryScreen} />

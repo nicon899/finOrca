@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Alert, Platform, ToastAndroid, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import DatePicker from '../components/DatePicker';
 import { AntDesign } from '@expo/vector-icons';
 import CategoryPicker from '../components/CategoryPicker';
+import { finContext } from '../contexts/FinContext';
 
 const CreateBookingScreen = props => {
     const [categoryId, setCategoryId] = useState(props.route.params.categoryId);
@@ -11,6 +12,7 @@ const CreateBookingScreen = props => {
     const [details, setDetails] = useState(props.route.params.editMode ? props.route.params.details : '');
     const [date, setDate] = useState(props.route.params.editMode ? new Date(props.route.params.date) : new Date());
     const [isPositive, setIsPositive] = useState(props.route.params.value > 0);
+    const { addTransaction, updateTransaction } = useContext(finContext).actions
 
     const scaleFontSize = (fontSize) => {
         return Math.ceil((fontSize * Math.min(Dimensions.get('window').width / 411, Dimensions.get('window').height / 861)));
@@ -88,9 +90,22 @@ const CreateBookingScreen = props => {
                     style={{ borderWidth: 1, borderColor: 'green', borderRadius: 5, alignItems: 'center', justifyContent: 'center', padding: 15, width: '30%', height: '50%' }}
                     onPress={() => {
                         if (/^[0-9]+(\.[0-9]{1,2})?$/g.test(value)) {
-                            // props.route.params.editMode ?
-                                // dispatch(financeActions.updateBooking(props.route.params.id, name, isPositive ? value : -1 * value, details, date, categoryId)) :
-                                // dispatch(financeActions.addBooking(name, isPositive ? value : -1 * value, details, date, categoryId));
+                            props.route.params.editMode ?
+                                updateTransaction({
+                                    id: props.route.params.id,
+                                    name: name,
+                                    value: isPositive ? value : -1 * value,
+                                    details: details,
+                                    date: date,
+                                    categoryId: categoryId
+                                }) :
+                                addTransaction({
+                                    name: name,
+                                    value: isPositive ? value : -1 * value,
+                                    details: details,
+                                    date: date,
+                                    categoryId: categoryId
+                                })
                             props.navigation.goBack();
                         } else {
                             switch (Platform.OS) {

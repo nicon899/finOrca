@@ -55,29 +55,6 @@ const CategoryScreen = props => {
 
     return (
         <View style={styles.screen}>
-            <View style={styles.topBar}>
-                <View style={styles.topBarCat}>
-                    <Text style={{ color: 'white', fontSize: scaleFontSize(36), fontWeight: 'bold', textAlign: 'center' }}>{selectedCategory.name} <Text numberOfLines={1} style={{ color: selectedCategory.value > 0 ? 'green' : 'red' }}>{(selectedCategory.name + selectedCategory.value).length > 20 && '\n'}{selectedCategory.value} €</Text> </Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            props.navigation.navigate('EditCategory', { categoryId: selectedCategory.id, name: selectedCategory.name })
-                        }}
-                    >
-                        <MaterialCommunityIcons name="lead-pencil" size={scaleFontSize(32)} color="white" />
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            <View style={{ flex: 1 }}>
-                <CategoryItemList
-                    style={{ maxHeight: '100%' }}
-                    bookings={context.transactions.filter(t => t.categoryId === selectedCategory.id)}
-                    categories={childCategories}
-                    showBooking={(id) => props.navigation.push('Booking', { id: id })}
-                    showCategory={(id) => setSelectedCategory(context.categories.find((category) => category.id === id))}
-                    showBookings={selectedCategory.id != -1}
-                />
-            </View>
 
             <View style={styles.topBarDate}>
                 <DatePicker
@@ -109,6 +86,32 @@ const CategoryScreen = props => {
                     </TouchableOpacity>}
                 </View>
             </View>
+
+            <View style={styles.topBar}>
+                <View style={styles.topBarCat}>
+                    <Text style={{ color: 'white', fontSize: scaleFontSize(36), fontWeight: 'bold', textAlign: 'center' }}>{selectedCategory.name} <Text numberOfLines={1} style={{ color: selectedCategory.value > 0 ? 'green' : 'red' }}>{(selectedCategory.name + selectedCategory.value).length > 20 && '\n'}{selectedCategory.value} €</Text> </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            props.navigation.navigate('EditCategory', { categoryId: selectedCategory.id, name: selectedCategory.name })
+                        }}
+                    >
+                        <MaterialCommunityIcons name="lead-pencil" size={scaleFontSize(32)} color="white" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={{ flex: 1 }}>
+                <CategoryItemList
+                    style={{ maxHeight: '100%' }}
+                    bookings={context.transactions.filter(t => t.categoryId === selectedCategory.id)}
+                    categories={childCategories}
+                    showBooking={(id) => props.navigation.push('Booking', { id: id })}
+                    showCategory={(id) => setSelectedCategory(context.categories.find((category) => category.id === id))}
+                    showBookings={selectedCategory.id != -1}
+                />
+            </View>
+
+
         </View >
     );
 };
