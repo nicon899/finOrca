@@ -82,7 +82,7 @@ const CategoryScreen = props => {
                             <Text style={{ color: 'white', fontSize: scaleFontSize(7) }}>Today</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={{ alignItems: 'center', justifyContent: 'center' }}
+                            style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
                             onPress={() => {
                                 setLatestDate();
                             }}>
@@ -92,7 +92,6 @@ const CategoryScreen = props => {
                     </View>
                 </View>
                 <TouchableOpacity
-                    style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
                     onPress={() => props.navigation.navigate('Settings')}>
                     <MaterialCommunityIcons name="cog-outline" size={scaleFontSize(28)} color="white" />
                 </TouchableOpacity>
@@ -173,12 +172,16 @@ const styles = StyleSheet.create({
     dateBar: {
         flexDirection: 'row',
         alignItems: 'center',
+        width: '65%'
+    },
+    dateInput: {
+        flex: 1
     },
     topBarDateIcons: {
         alignItems: 'center',
         justifyContent: 'space-evenly',
         flexDirection: 'row',
-        width: '40%'
+        paddingHorizontal: 5
     },
     headerCat: {
         width: '100%',
@@ -201,7 +204,7 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 10,
         flex: 1,
-    }
+    },
 });
 
 export default CategoryScreen;
