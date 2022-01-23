@@ -101,7 +101,7 @@ const CategoryScreen = props => {
                     }}
                 >
                     <Text style={{ color: 'white', fontSize: scaleFontSize(36), fontWeight: 'bold', textAlign: 'center' }}>{selectedCategory.name}</Text>
-                    <Text numberOfLines={1} style={{ fontSize: scaleFontSize(36), fontWeight: 'bold', textAlign: 'center', color: selectedCategory.value > 0 ? 'green' : 'red' }}>{(selectedCategory.name + selectedCategory.value).length > 20 && '\n'}{selectedCategory.value} €</Text>
+                    <Text numberOfLines={1} style={{ marginRight: 5, fontSize: scaleFontSize(28), textAlign: 'center', color: selectedCategory.value > 0 ? 'green' : 'red', fontFamily: 'JetBrainsMono-Bold' }}>{(selectedCategory.name + selectedCategory.value).length > 20 && '\n'}{selectedCategory.value.toFixed(2)}</Text>
                 </TouchableOpacity>
             </View>
 
